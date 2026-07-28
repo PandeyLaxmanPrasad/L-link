@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>LoveLink · 心之通话 | 情感连接应用</title>
+  <!-- Google Fonts & simple reset -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none; /* better for mobile tap feel, but text can be selected if needed */
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 20% 30%, #ffdde1, #ee9ca7);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: background 0.3s ease;
+    }
+
+    /* main glassmorphic card */
+    .app-container {
+      max-width: 550px;
+      width: 100%;
+      background: rgba(255, 245, 245, 0.85);
+      backdrop-filter: blur(16px);
+      border-radius: 64px 48px 72px 48px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.6);
+      overflow: hidden;
+      padding: 24px 20px 32px;
+      transition: all 0.2s ease;
+    }
+
+    /* header + romantic animation */
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #c4426e, #ff8c94);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+      display: inline-block;
+      animation: gentlePulse 2.2s infinite ease-in-out;
+    }
+    @keyframes gentlePulse {
+      0% { transform: scale(1); text-shadow: 0 0 0px rgba(196,66,110,0);}
+      50% { transform: scale(1.02); text-shadow: 0 0 8px rgba(255,140,148,0.4);}
+      100% { transform: scale(1); text-shadow: 0 0 0px rgba(196,66,110,0);}
+    }
+    .sub {
+      font-size: 0.85rem;
+      color: #b34e6e;
+      background: rgba(255,240,240,0.7);
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 40px;
+      margin-top: 8px;
+      font-weight: 500;
+      backdrop-filter: blur(4px);
+    }
+
+    /* 浪漫图像 + 爱心动画区 */
+    .love-media {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 16px 0 12px;
+      position: relative;
+    }
+    .floating-heart {
+      font-size: 3.6rem;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.2));
+      animation: floatHeart 2s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    @keyframes floatHeart {
+      0% { transform: translateY(0px) rotate(0deg);}
+      100% { transform: translateY(-12px) rotate(5deg);}
+    }
+    .floating-heart:active {
+      transform: scale(0.95);
+    }
+    .love-img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #ffb7c5;
+      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+      margin: 8px 0;
+      transition: transform 0.3s ease;
+    }
+    .love-img:hover {
+      transform: scale(1.03);
+    }
+    .audio-control {
+      background: #fce4ec;
+      border-radius: 60px;
+      padding: 5px 12px;
+      margin: 6px 0;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #b13e62;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      border: none;
+    }
+    .audio-control:hover {
+      background: #ffd0da;
+      transform: scale(0.98);
+    }
+
+    /* 通话卡片区域 - 主交互 */
+    .call-section {
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 48px;
+      padding: 18px 16px;
+      margin: 16px 0 12px;
+      backdrop-filter: blur(6px);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.7), 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .contact-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff0f3;
+      padding: 6px 18px;
+      border-radius: 50px;
+    }
+    .contact-badge span {
+      font-weight: 600;
+      color: #a13558;
+    }
+    .status-light {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #2ecc71;
+      box-shadow: 0 0 5px #2ecc71;
+      animation: softBlink 1.5s infinite;
+    }
+    @keyframes softBlink {
+      0% { opacity: 0.5; transform: scale(0.9);}
+      100% { opacity: 1; transform: scale(1.2);}
+    }
+    .btn-call {
+      background: linear-gradient(120deg, #ff7e8f, #ff4d6d);
+      border: none;
+      padding: 12px 28px;
+      border-radius: 60px;
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 14px rgba(255, 77, 109, 0.4);
+    }
+    .btn-call:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .call-status {
+      text-align: center;
+      font-weight: 600;
+      background: #ffeef2;
+      padding: 12px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      color: #ad3f60;
+    }
+
+    /* 聊天气泡区域 - 通话记录/情话 */
+    .conversation-log {
+      background: rgba(250, 240, 242, 0.7);
+      border-radius: 32px;
+      padding: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 10px 0;
+      scroll-behavior: smooth;
+    }
+    .bubble {
+      background: white;
+      border-radius: 26px;
+      padding: 8px 14px;
+      margin: 8px 0;
+      width: fit-content;
+      max-width: 90%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      animation: fadeSlideUp 0.3s ease;
+      font-size: 0.85rem;
+    }
+    .bubble.left {
+      background: #ffe4ec;
+      border-bottom-left-radius: 4px;
+      color: #a33355;
+    }
+    .bubble.right {
+      background: #ffd0da;
+      margin-left: auto;
+      border-bottom-right-radius: 4px;
+      text-align: right;
+      color: #97264a;
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(8px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .input-area input {
+      flex: 1;
+      border: none;
+      background: rgba(255,255,240,0.9);
+      border-radius: 60px;
+      padding: 12px 18px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      box-shadow: inset 0 1px 3px #0001, 0 1px 0 white;
+    }
+    .input-area button {
+      background: #ff96ab;
+      border: none;
+      width: 48px;
+      border-radius: 60px;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: 0.2s;
+      color: white;
+    }
+    .input-area button:active {
+      transform: scale(0.9);
+    }
+
+    /* 高级动画背景微光 */
+    .glow-text {
+      font-size: 0.7rem;
+      text-align: center;
+      margin-top: 12px;
+      opacity: 0.7;
+    }
+
+    /* 响应式完美:手机、macbook、pc */
+    @media (max-width: 560px) {
+      .app-container {
+        padding: 18px 16px;
+      }
+      .btn-call {
+        padding: 10px 20px;
+        font-size: 1rem;
+      }
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      .floating-heart {
+        font-size: 2.8rem;
+      }
+    }
+    @media (min-width: 1200px) {
+      .app-container {
+        max-width: 620px;
+        transition: all 0.2s;
+      }
+    }
+    button {
+      background: none;
+      border: none;
+    }
+    audio {
+      display: none;
+    }
+    .love-icon-small {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container" id="appRoot">
+  <div class="header">
+    <h1>💗 L LINK · 愛の通話 💗</h1>
+    <div class="sub">✨ 心与心 · 即时连接 ✨</div>
+  </div>
+
+  <!-- 图像 + 漂浮爱心 + 浪漫音频播放控制 -->
+  <div class="love-media">
+    <img class="love-img" id="loveAvatar" src="https://placekitten.com/150/150?image=2" alt="cute couple" 
+         onerror="this.src='https://picsum.photos/id/104/150/150'">
+    <!-- 动态爱心 点击触发爱心动画+音效预览 -->
+    <div class="floating-heart" id="floatingHeart">❤️‍🔥</div>
+    <button class="audio-control" id="toggleMusicBtn">🎵 播放浪漫旋律 🎶</button>
+  </div>
+
+  <!-- 核心通话区域 -->
+  <div class="call-section">
+    <div class="contact-row">
+      <div class="contact-badge">
+        <div class="status-light"></div>
+        <span>💖 你的恋人 · Lina 💖</span>
+      </div>
+      <button class="btn-call" id="callBtn">
+        📞 通话连接 ✨
+      </button>
+    </div>
+    <div class="call-status" id="callStatusDisplay">
+      💭 等待轻触「通话连接」，传递心跳...
+    </div>
+  </div>
+
+  <!-- 聊天记录区域 - 双向情感消息 + 通话文本记录 -->
+  <div class="conversation-log" id="chatLog">
+    <div class="bubble left">💌 亲爱的，今天想听你分享温柔~</div>
+    <div class="bubble right">🌹 每一秒都在想着你，Love Link为你开启✨</div>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="messageInput" placeholder="💬 写下你想对TA说的话...  支持语音情感" autocomplete="off">
+    <button id="sendMsgBtn">➤</button>
+  </div>
+  <div class="glow-text">
+    🎧 触摸爱心触发心动特效 · 通话时自动发送浪漫问候
+  </div>
+</div>
+
+<audio id="bgAudio" loop preload="auto">
+  <!-- 合法采样浪漫轻音乐片段(无版权/友好公域) 实际使用轻柔mp3 base64? 为了不依赖外部，使用Web Audio API产生柔和气氛? 更好: 嵌入一个简单生成 oscillator? 但会涉及autoplay策略，浏览器会限制，我们用用户手势启动。采用免费的公开音效? 为了保证演示, 静默友好但提供音频上下文振荡器选项? 
+    更优雅: 使用内置 audioContext 生成柔和梦幻pad? 但这有点复杂。但从体验角度，采用一个隐藏audio元素 + 内置dataurl音频(简短小片段替代静音)？ 不，最好有实际声音; 由于版权，可以使用浏览器内置声音? 我们构建一个简单的AudioContext正弦波生成柔和氛围背景，但首次需要用户交互? 附加选项，但为了避免限制，我会优雅使用铃声元素但有用户手势。 并且提供音乐按钮播放甜美氛围通过简单的振荡器音符序列？也可以用那种方式展示趣味，代码展示高级。但其实我使用短小的base64 wav? 文件太大。最简单: 利用Web Audio API创造一个简单的合成旋律（love chord），每次连接/爱心触发也会播放。 作为进阶, 添加令人愉悦的声音反馈+通话声音模拟.
+      此处实现一个高级合成器: 每次点击爱心 或 通话连接时播放柔美音符。另外背景音乐按钮允许开启/关闭简单的合成循环。这样做完全自包含且无依赖，具备“声音”且浪漫高级。
+  -->
+</audio>
+
+<script>
+  (function(){
+    // ---------- 高级音频合成器 (完全自包含，无外部文件) ----------
+    let audioCtx = null;
+    let isAudioAllowed = false;      // 是否已激活音频上下文 (需要用户手势)
+    let bgMusicInterval = null;      // 循环背景音句柄
+    let isBGAudioPlaying = false;
+    let masterGain = null;
+    let oscGain = null;
+    
+    // 初始化音频上下文(延迟激活)
+    function initAudio() {
+      if (audioCtx) return audioCtx;
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.35;
+      masterGain.connect(audioCtx.destination);
+      return audioCtx;
+    }
+    
+    // 播放简短优美的和弦 (爱情音效)
+    function playLoveChord(type = 'spark') {
+      if (!isAudioAllowed) return;
+      if (!audioCtx) return;
+      // 确保音频上下文状态运行
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().then(() => {
+          actuallyPlayChord(type);
+        }).catch(e=>console.log);
+      } else {
+        actuallyPlayChord(type);
+      }
+    }
+    
+    function actuallyPlayChord(type) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.2, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
+      gainNode.connect(masterGain);
+      
+      if (type === 'spark') {
+        // 温柔铃声
+        const osc1 = audioCtx.createOscillator();
+        osc1.frequency.value = 523.25; // C5
+        osc1.type = 'sine';
+        osc1.connect(gainNode);
+        osc1.start();
+        osc1.stop(now+0.8);
+        
+        const osc2 = audioCtx.createOscillator();
+        osc2.frequency.value = 659.25; // E5
+        osc2.type = 'sine';
+        osc2.connect(gainNode);
+        osc2.start();
+        osc2.stop(now+0.9);
+        
+        const osc3 = audioCtx.createOscillator();
+        osc3.frequency.value = 783.99; // G5
+        osc3.type = 'sine';
+        osc3.connect(gainNode);
+        osc3.start();
+        osc3.stop(now+1.0);
+      } else if (type === 'call') {
+        // 通话连接特殊音效 - 心电波
+        const osc = audioCtx.createOscillator();
+        osc.frequency.value = 880;
+        osc.type = 'sine';
+        osc.connect(gainNode);
+        osc.start();
+        osc.stop(now+0.5);
+        const osc2 = audioCtx.createOscillator();
+        osc2.frequency.value = 440;
+        osc2.type = 'triangle';
+        osc2.connect(gainNode);
+        osc2.start();
+        osc2.stop(now+0.7);
+      } else if (type === 'message') {
+        const osc = audioCtx.createOscillator();
+        osc.frequency.value = 660;
+        osc.type = 'sine';
+        osc.connect(gainNode);
+        osc.start();
+        osc.stop(now+0.3);
+      }
+    }
+    
+    // 背景氛围音乐 (简单循环琶音)
+    function startAmbientMusic() {
+      if (!isAudioAllowed || !audioCtx) return;
+      if (bgMusicInterval) clearInterval(bgMusicInterval);
+      let step = 0;
+      const notes = [523.25, 587.33, 659.25, 493.88];
+      bgMusicInterval = setInterval(() => {
+        if (!isBGAudioPlaying) return;
+        if (audioCtx.state === 'running') {
+          const now = audioCtx.currentTime;
+          const gain = audioCtx.createGain();
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
+          gain.connect(masterGain);
+          const osc = audioCtx.createOscillator();
+          osc.frequency.value = notes[step % notes.length];
+          osc.type = 'sine';
+          osc.connect(gain);
+          osc.start();
+          osc.stop(now+1.0);
+          step++;
+        }
+      }, 1800);
+    }
+    
+    function stopAmbientMusic() {
+      if (bgMusicInterval) {
+        clearInterval(bgMusicInterval);
+        bgMusicInterval = null;
+      }
+    }
+    
+    // 用户首次任意交互激活音频
+    function enableAudioAndResume() {
+      if (isAudioAllowed) return Promise.resolve(true);
+      return new Promise((resolve) => {
+        const ctx = initAudio();
+        ctx.resume().then(() => {
+          isAudioAllowed = true;
+          masterGain.gain.value = 0.3;
+          resolve(true);
+        }).catch(()=>resolve(false));
+      });
+    }
+    
+    // 浪漫音乐按钮 (toggle)
+    const toggleMusicBtn = document.getElementById('toggleMusicBtn');
+    toggleMusicBtn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await enableAudioAndResume();
+      if (!isBGAudioPlaying) {
+        isBGAudioPlaying = true;
+        startAmbientMusic();
+        toggleMusicBtn.innerHTML = '🎶 浪漫旋律 · 播放中 🎶';
+        toggleMusicBtn.style.background = '#ffbfcc';
+        playLoveChord('spark');
+      } else {
+        isBGAudioPlaying = false;
+        stopAmbientMusic();
+        toggleMusicBtn.innerHTML = '🎵 播放浪漫旋律 🎶';
+        toggleMusicBtn.style.background = '#fce4ec';
+      }
+    });
+    
+    // 爱心点击特效 + 音效 + 动态视觉爱心雨动画
+    const heartElement = document.getElementById('floatingHeart');
+    heartElement.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      await enableAudioAndResume();
+      playLoveChord('spark');
+      // 爱心临时放大 + 额外显示飞心
+      heartElement.style.transform = 'scale(1.3)';
+      setTimeout(() => { heartElement.style.transform = ''; }, 200);
+      // 浮动爱心粒子效果（临时飘心）
+      createFlyingHeart();
+    });
+    
+    function createFlyingHeart() {
+      const container = document.getElementById('appRoot');
+      const heartDiv = document.createElement('div');
+      heartDiv.innerHTML = '❤️';
+      heartDiv.style.position = 'absolute';
+      heartDiv.style.fontSize = '28px';
+      heartDiv.style.pointerEvents = 'none';
+      heartDiv.style.left = (Math.random() * 80 + 10) + '%';
+      heartDiv.style.bottom = '40%';
+      heartDiv.style.opacity = '1';
+      heartDiv.style.transition = 'all 1.2s ease-out';
+      heartDiv.style.zIndex = '999';
+      container.style.position = 'relative';
+      container.appendChild(heartDiv);
+      requestAnimationFrame(() => {
+        heartDiv.style.transform = 'translateY(-120px) rotate(15deg)';
+        heartDiv.style.opacity = '0';
+      });
+      setTimeout(() => { heartDiv.remove(); }, 1300);
+    }
+    
+    // 随机浪漫图片池: 每次通话或爱心可换图?
+    const loveImages = [
+      "https://picsum.photos/id/144/150/150",   // 日落恋人感
+      "https://picsum.photos/id/106/150/150",   // 花
+      "https://picsum.photos/id/96/150/150",    // 山景
+      "https://picsum.photos/id/169/150/150",   // 阳光
+      "https://picsum.photos/id/155/150/150"
+    ];
+    let imgIdx = 0;
+    const loveAvatar = document.getElementById('loveAvatar');
+    function cycleRomanticImage() {
+      imgIdx = (imgIdx + 1) % loveImages.length;
+      loveAvatar.src = loveImages[imgIdx];
+    }
+    setInterval(cycleRomanticImage, 7000);
+    
+    // ----- 通话核心逻辑 + 聊天动画 + 消息系统 ----
+    const callBtn = document.getElementById('callBtn');
+    const callStatusDiv = document.getElementById('callStatusDisplay');
+    const chatLogDiv = document.getElementById('chatLog');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendMsgBtn');
+    
+    let isCallActive = false;
+    let callInterval = null;
+    
+    function addMessage(text, side) { // side: 'left'(恋人) 或 'right'(我)
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${side}`;
+      bubble.innerHTML = text;
+      chatLogDiv.appendChild(bubble);
+      bubble.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // 新消息播放简短提示音 (仅当通话激活或者随意)
+      if (isAudioAllowed) playLoveChord('message');
+    }
+    
+    // 模拟通话时随机恋人回复浪漫句子
+    const loveResponses = [
+      "💞 你的声音让我心跳加速...", "🌙 今晚月色真美，想你~", "✨ 通话中：感受到你的温度了吗？", "🌸 我也好爱你，永远陪着你", "💖 Love Link 传递着我的心跳声", "🎀 此刻只想和你拥抱", "🍬 你是我的糖，甜到心底"
+    ];
+    
+    function startCallSimulation() {
+      if (callInterval) clearInterval(callInterval);
+      addMessage("💕 恋人接听了你的来电... 听到温柔呼吸~", "left");
+      addMessage("✨ 我正在听，你有好多的爱想对我说吗？✨", "left");
+      // 恋人每隔6秒随机发一条浪漫句子
+      callInterval = setInterval(() => {
+        if (isCallActive) {
+          const randomMsg = loveResponses[Math.floor(Math.random() * loveResponses.length)];
+          addMessage(randomMsg, "left");
+          // 通话期间还可以自动回复状态
+          callStatusDiv.innerHTML = "📞 通话中 · 爱意电流 ⚡ 正在传递...";
+        } else {
+          if (callInterval) clearInterval(callInterval);
+          callInterval = null;
+        }
+      }, 7000);
+    }
+    
+    function endCallSimulation() {
+      if (callInterval) {
+        clearInterval(callInterval);
+        callInterval = null;
+      }
+      callStatusDiv.innerHTML = "💔 通话已挂断 · 点击「通话连接」再次相遇 💔";
+      addMessage("💧 恋人: 要记得想我哦, 我一直在~", "left");
+    }
+    
+    // 通话连接按钮
+    callBtn.addEventListener('click', async () => {
+      await enableAudioAndResume();
+      playLoveChord('call');
+      if (!isCallActive) {
+        isCallActive = true;
+        callBtn.style.background = "linear-gradient(120deg, #c4456a, #a12f4f)";
+        callBtn.innerHTML = "💗 通话中 · 挂断 💗";
+        callStatusDiv.innerHTML = "📞 正在连接爱的频率... 已建立心之通道 📞";
+        addMessage("✨ 你发起了甜蜜通话邀请 ✨", "right");
+        setTimeout(() => {
+          if(isCallActive) startCallSimulation();
+        }, 300);
+      } else {
+        // 挂断
+        isCallActive = false;
+        callBtn.style.background = "linear-gradient(120deg, #ff7e8f, #ff4d6d)";
+        callBtn.innerHTML = "📞 通话连接 ✨";
+        endCallSimulation();
+        playLoveChord('spark');
+      }
+    });
+    
+    // 发送消息 (自己的消息)
+    async function sendUserMessage() {
+      let msg = messageInput.value.trim();
+      if (msg === "") return;
+      await enableAudioAndResume();
+      addMessage(msg, "right");
+      playLoveChord('message');
+      messageInput.value = "";
+      // 如果通话激活中，恋人有可能自动回复额外消息（即时响应）
+      if (isCallActive) {
+        setTimeout(() => {
+          if (isCallActive) {
+            const autoReply = ["❤️ 你真好～", "💌 我收到了", "🌹 我也是这么想的", "😘 爱你哟"][Math.floor(Math.random()*4)];
+            addMessage(autoReply, "left");
+          } else {
+            // 非通话状态也有温柔回响
+            addMessage("💖 (离线留言: 我想你了)", "left");
+          }
+        }, 600);
+      } else {
+        // 即使不在通话，发送消息也会收到离线关爱
+        addMessage("💕 你的消息已送达星空，恋人会很快回应~", "left");
+      }
+    }
+    
+    sendBtn.addEventListener('click', sendUserMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendUserMessage();
+    });
+    
+    // 页面优雅激活音频准备 - 任意触摸区域可以预激活音频上下文
+    const anyActivation = async () => {
+      await enableAudioAndResume();
+      document.body.removeEventListener('click', anyActivation);
+      document.body.removeEventListener('touchstart', anyActivation);
+    };
+    document.body.addEventListener('click', anyActivation);
+    document.body.addEventListener('touchstart', anyActivation);
+    
+    // 额外光彩: 动态改变背景
+    setInterval(() => {
+      const hue = Date.now() / 80;
+      document.body.style.background = `radial-gradient(circle at 30% 40%, #ffe0e7, #f9bec8)`;
+    }, 4000);
+    
+    // 初始化显示一条浪漫提示
+    setTimeout(() => {
+      addMessage("💗 L LINK 已连接你的心 💗 轻触爱心或通话～", "left");
+    }, 800);
+  })();
+</script>
+</body>
+</html>
